@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Atlas Media Group | Parceria para Criadores</title>
+    <meta name="description" content="Monetize seus stories com uma parceria simples, rastreável e pronta para postar.">
+    
+    <!-- Fonte Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* [EDITAR] CORES PRINCIPAIS DA ATLAS MEDIA GROUP */
+            --navy-blue: #071A33;      /* Azul marinho principal */
+            --deep-blue: #030B18;      /* Azul quase preto para contrastes fortes */
+            --primary-gold: #D4AF37;   /* Dourado principal */
+            --dark-gold: #B5952F;      /* Dourado escuro para hovers */
+            --off-white: #F8F6F0;      /* Fundo principal premium */
+            --white: #FFFFFF;          /* Branco puro para cards */
+            
+            --text-dark: #111827;      /* Texto principal */
+            --medium-gray: #6B7280;    /* Texto secundário */
+            --light-gray: #E5E7EB;     /* Bordas sutis */
+            
+            --shadow-sm: 0 4px 6px rgba(7, 26, 51, 0.05);
+            --shadow-md: 0 10px 20px rgba(7, 26, 51, 0.08);
+            --shadow-lg: 0 20px 40px rgba(212, 175, 55, 0.15); /* Sombra com leve tom dourado */
+            --radius: 16px;
+            
+            --transition-fast: all 0.2s ease;
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            
+            --nav-height: 70px;
+            --top-bar-height: 38px;
+        }
+
+        /* ================= RESET & BASE ================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--off-white);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Utilidades de Texto */
+        .text-gold { color: var(--primary-gold); }
+        .text-navy { color: var(--navy-blue); }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Texturas Premium (Azul e Dourado) */
+        .texture-radial-blue {
+            background: radial-gradient(circle at top right, rgba(7, 26, 51, 0.04) 0%, transparent 40%),
+                        radial-gradient(circle at bottom left, rgba(212, 175, 55, 0.04) 0%, transparent 40%);
+        }
+
+        .texture-diagonal {
+            background-color: var(--navy-blue);
+            background-image: repeating-linear-gradient(
+                45deg,
+                rgba(212, 175, 55, 0.03) 0px,
+                rgba(212, 175, 55, 0.03) 2px,
+                transparent 2px,
+                transparent 8px
+            );
+            color: var(--white);
+        }
+
+        /* ================= PRELOADER ================= */
+        #preloader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--deep-blue);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.6s ease;
+        }
+
+        .preloader-logo {
+            font-size: 2.5rem;
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            color: var(--white);
+            animation: pulse 2s infinite ease-in-out;
+        }
+        
+        .preloader-logo span { color: var(--primary-gold); }
+
+        .preloader-copy {
+            color: var(--primary-gold);
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-top: 12px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards 0.3s;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .preloader-line {
+            width: 0%;
+            height: 3px;
+            background-color: var(--primary-gold);
+            margin-top: 20px;
+            animation: loadLine 1.5s cubic-bezier(0.8, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes loadLine {
+            0% { width: 0%; }
+            50% { width: 100px; }
+            100% { width: 100%; opacity: 0; }
+        }
+
+        /* ================= NAVBAR ================= */
+        .navbar {
+            position: fixed;
+            top: var(--top-bar-height); left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            transition: var(--transition);
+            border-bottom: 1px solid transparent;
+        }
+
+        .navbar.scrolled {
+            top: 0;
+            background-color: rgba(248, 246, 240, 0.95); /* Off-white com opacidade */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15); /* Borda dourada sutil */
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            text-decoration: none;
+            color: var(--navy-blue);
+            letter-spacing: -0.05em;
+        }
+        
+        .logo span { color: var(--primary-gold); }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition-fast);
+        }
+
+        .nav-links a:hover { color: var(--primary-gold); }
+
+        /* ================= BOTOES ================= */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: var(--transition-fast);
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Botão Principal: Dourado com texto Azul Profundo */
+        .btn-primary {
+            background-color: var(--primary-gold);
+            color: var(--deep-blue);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--dark-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Botão Outline: Fundo transparente, borda Azul Marinho */
+        .btn-outline {
+            background-color: transparent;
+            color: var(--navy-blue);
+            border: 2px solid var(--navy-blue);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--navy-blue);
+            color: var(--white);
+        }
+
+        /* Botão Secundário (Usado nos blocos escuros) */
+        .btn-white {
+            background-color: var(--white);
+            color: var(--navy-blue);
+        }
+
+        .btn-white:hover {
+            background-color: var(--primary-gold);
+            color: var(--deep-blue);
+            transform: translateY(-2px);
+        }
+
+        .nav-cta {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            background-color: var(--navy-blue);
+            color: var(--white);
+        }
+        
+        .nav-cta:hover {
+            background-color: var(--primary-gold);
+            color: var(--deep-blue);
+        }
+
+        /* ================= HERO ================= */
+        .hero {
+            position: relative;
+            min-height: 100svh;
+            display: flex;
+            align-items: center;
+            padding-top: calc(var(--nav-height) + var(--top-bar-height));
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background-color: rgba(212, 175, 55, 0.1);
+            color: var(--dark-gold);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+            color: var(--navy-blue);
+        }
+
+        .highlight {
+            color: var(--primary-gold);
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero p {
+            font-size: clamp(1.1rem, 2vw, 1.25rem);
+            color: var(--medium-gray);
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        /* Gráficos de fundo abstratos */
+        .abstract-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 1;
+            opacity: 0.5;
+        }
+
+        .shape-1 {
+            top: -10%; right: -5%;
+            width: 500px; height: 500px;
+            background-color: rgba(212, 175, 55, 0.15); /* Dourado */
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .shape-2 {
+            bottom: -10%; left: -10%;
+            width: 400px; height: 400px;
+            background-color: rgba(7, 26, 51, 0.1); /* Azul Marinho */
+            animation: float 10s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-30px) scale(1.05); }
+            100% { transform: translateY(0px) scale(1); }
+        }
+
+        /* ================= ROLLERS (MARQUEES) ================= */
+        .roller-wrapper {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            height: var(--top-bar-height);
+        }
+
+        /* Roller Topo: Fundo Azul, Texto Dourado */
+        .roller-wrapper.top-bar {
+            position: absolute; 
+            top: 0;
+            left: 0;
+            z-index: 1005;
+            background-color: var(--navy-blue);
+            color: var(--primary-gold);
+        }
+
+        /* Roller Escuro: Fundo Azul Profundo, Texto Dourado */
+        .roller-wrapper.dark {
+            background-color: var(--deep-blue);
+            color: var(--primary-gold);
+            height: 50px;
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        /* Roller Dourado: Fundo Dourado, Texto Azul Profundo */
+        .roller-wrapper.gold {
+            background-color: var(--primary-gold);
+            color: var(--deep-blue);
+            height: 50px;
+        }
+
+        .roller-track {
+            display: inline-flex;
+            animation: scroll-left 25s linear infinite;
+        }
+
+        .roller-wrapper.dark .roller-track, .roller-wrapper.gold .roller-track {
+            animation: scroll-left 35s linear infinite;
+        }
+
+        .roller-item {
+            font-weight: 800;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .roller-wrapper.dark .roller-item, .roller-wrapper.gold .roller-item {
+            font-size: 1.1rem;
+            padding: 0 3rem;
+        }
+
+        .roller-icon {
+            font-size: 0.8em;
+            opacity: 0.7;
+        }
+
+        @keyframes scroll-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* ================= FOOTER ================= */
+        .footer {
+            background-color: var(--deep-blue);
+            color: var(--white);
+            padding: 4rem 24px 2rem;
+            text-align: center;
+            border-top: 2px solid var(--primary-gold);
+        }
+
+        .footer-logo {
+            font-weight: 900;
+            font-size: 1.8rem;
+            letter-spacing: -0.05em;
+            color: var(--white);
+            margin-bottom: 1rem;
+            display: inline-block;
+            text-decoration: none;
+        }
+        
+        .footer-logo span { color: var(--primary-gold); }
+
+        .footer p {
+            color: var(--light-gray);
+            font-size: 0.95rem;
+            max-width: 400px;
+            margin: 0 auto 2rem;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        /* ================= CARDS & GRIDS ================= */
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 40px; }
+
+        section { padding: 100px 0; }
+        
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 16px;
+            color: var(--navy-blue);
+            letter-spacing: -0.02em;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            color: var(--medium-gray);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 60px;
+        }
+
+        .card {
+            background-color: var(--white);
+            border-radius: var(--radius);
+            padding: 40px 30px;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border: 1px solid rgba(7, 26, 51, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: var(--navy-blue);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+            border-color: rgba(212, 175, 55, 0.3); /* Hover com borda dourada */
+        }
+        
+        .card:hover::before { transform: scaleX(1); background: var(--primary-gold); }
+
+        .card-icon {
+            width: 60px; height: 60px;
+            background-color: rgba(7, 26, 51, 0.05);
+            color: var(--navy-blue);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; margin-bottom: 24px;
+            transition: var(--transition-fast);
+        }
+
+        .card:hover .card-icon {
+            background-color: var(--navy-blue);
+            color: var(--primary-gold);
+        }
+
+        .card h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 12px; color: var(--navy-blue); }
+        .card p { color: var(--medium-gray); font-size: 1rem; }
+
+        /* ================= COMPONENTES ESPECÍFICOS ================= */
+        .step-list { list-style: none; counter-reset: steps; display: flex; flex-direction: column; gap: 30px; }
+        .step-item {
+            position: relative; padding-left: 70px;
+        }
+        .step-item::before {
+            counter-increment: steps; content: counter(steps);
+            position: absolute; left: 0; top: -5px;
+            width: 50px; height: 50px;
+            background-color: var(--navy-blue); color: var(--primary-gold);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(7, 26, 51, 0.2);
+        }
+        .step-item h4 { font-size: 1.2rem; font-weight: 800; margin-bottom: 8px; color: var(--navy-blue); }
+        .step-item p { color: var(--medium-gray); }
+
+        .cta-banner {
+            border-radius: 24px;
+            padding: 60px 40px;
+            text-align: center;
+            margin: 40px 0;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .cta-banner h3 { font-size: 2rem; font-weight: 800; margin-bottom: 16px; }
+        .cta-banner p { font-size: 1.1rem; margin-bottom: 32px; opacity: 0.9; }
+
+        /* ================= FAQ ================= */
+        .faq-item {
+            border-bottom: 1px solid rgba(7, 26, 51, 0.1);
+            padding: 24px 0;
+            cursor: pointer;
+        }
+        .faq-question {
+            display: flex; justify-content: space-between; align-items: center;
+            font-weight: 700; font-size: 1.1rem; color: var(--navy-blue);
+        }
+        .faq-icon {
+            transition: transform 0.3s ease; color: var(--primary-gold);
+        }
+        .faq-answer {
+            max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
+            color: var(--medium-gray); margin-top: 0; opacity: 0;
+        }
+        .faq-item.active .faq-answer {
+            max-height: 200px; margin-top: 16px; opacity: 1;
+        }
+        .faq-item.active .faq-icon { transform: rotate(45deg); color: var(--navy-blue); }
+
+        /* ================= FLOATING CTA ================= */
+        .floating-cta {
+            position: fixed;
+            bottom: env(safe-area-inset-bottom, 20px);
+            left: 0; width: 100%;
+            padding: 0 20px;
+            z-index: 1001;
+            display: none;
+            pointer-events: none;
+        }
+        
+        .floating-btn {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            width: 100%; max-width: 400px; margin: 0 auto;
+            background-color: var(--navy-blue);
+            color: var(--primary-gold);
+            padding: 16px 24px;
+            border-radius: 100px;
+            font-weight: 800; font-size: 1.1rem;
+            text-decoration: none;
+            box-shadow: 0 10px 25px rgba(7, 26, 51, 0.3);
+            pointer-events: auto;
+            border: 2px solid var(--primary-gold);
+        }
+
+        /* Animações de Scroll */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* ================= RESPONSIVO ================= */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero { padding-top: 120px; text-align: center; }
+            .hero-content { margin: 0 auto; }
+            .hero-buttons { justify-content: center; flex-direction: column; width: 100%; }
+            .btn { width: 100%; }
+            .floating-cta { display: block; bottom: 20px; }
+            section { padding: 60px 0; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .cta-banner { padding: 40px 20px; }
+            .cta-banner h3 { font-size: 1.5rem; }
+            
+            /* Ajuste para evitar sobreposição do CTA flutuante no footer */
+            .cta-final { padding-bottom: 100px; }
+            .footer { padding-bottom: 100px; }
+        }
+    </style>
+</head>
+<body class="texture-radial-blue">
+
+    <!-- PRELOADER -->
+    <div id="preloader">
+        <div class="preloader-logo">ATLAS<span>MEDIA.</span></div>
+        <p class="preloader-copy">Elevando o Padrão da Influência Digital</p>
+        <div class="preloader-line"></div>
+    </div>
+
+    <!-- ROLLER ABSOLUTO NO TOPO (Rola para a Esquerda) -->
+    <div class="roller-wrapper top-bar">
+        <div class="roller-track">
+            <!-- Conteúdo duplicado para efeito infinito -->
+            <div class="roller-item">CONEXÃO AUTÊNTICA <span class="roller-icon">✦</span></div>
+            <div class="roller-item">PARCERIAS REAIS <span class="roller-icon">✦</span></div>
+            <div class="roller-item">CREATORS & MARCAS <span class="roller-icon">✦</span></div>
+            <div class="roller-item">INFLUÊNCIA COM PROPÓSITO <span class="roller-icon">✦</span></div>
+            <div class="roller-item">ESTRATÉGIA DE CONTEÚDO <span class="roller-icon">✦</span></div>
+            <!-- Duplicação para loop -->
+            <div class="roller-item">CONEXÃO AUTÊNTICA <span class="roller-icon">✦</span></div>
+            <div class="roller-item">PARCERIAS REAIS <span class="roller-icon">✦</span></div>
+            <div class="roller-item">CREATORS & MARCAS <span class="roller-icon">✦</span></div>
+            <div class="roller-item">INFLUÊNCIA COM PROPÓSITO <span class="roller-icon">✦</span></div>
+            <div class="roller-item">ESTRATÉGIA DE CONTEÚDO <span class="roller-icon">✦</span></div>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">ATLAS<span>MEDIA.</span></a>
+            <div class="nav-links">
+                <a href="#como-funciona">Como funciona</a>
+                <a href="#objecoes">Benefícios</a>
+                <a href="#faq">FAQ</a>
+            </div>
+            <!-- [EDITAR] Link do CTA da Navbar -->
+            <a href="https://instagram.com/atlasmediagroup" target="_blank" class="btn nav-cta">Chama a Atlas</a>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="abstract-shape shape-1"></div>
+        <div class="abstract-shape shape-2"></div>
+        
+        <div class="container">
+            <div class="hero-content reveal">
+                <div class="badge">Agência de Performance DGT</div>
+                <h1>Monetize seus stories sem vender sua <span class="highlight">alma.</span></h1>
+                <p>Nós conectamos seu perfil às melhores campanhas de conversão. Você foca em criar conteúdo, a <strong>Atlas Media Group</strong> cuida da estratégia, rastreamento e do seu pagamento.</p>
+                
+                <div class="hero-buttons">
+                    <!-- [EDITAR] Link do botão principal -->
+                    <a href="https://instagram.com/atlasmediagroup" target="_blank" class="btn btn-primary">
+                        Quero minha campanha
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </a>
+                    <a href="#como-funciona" class="btn btn-outline">Ver como funciona</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERSTITIAL CTA 1 -->
+    <div class="container reveal">
+        <div class="cta-banner texture-diagonal">
+            <h3>Preparado para o próximo nível?</h3>
+            <p>Se o seu perfil se encaixa, temos uma campanha te esperando.</p>
+            <a href="https://instagram.com/atlasmediagroup" target="_blank" class="btn btn-white">Receber proposta no Instagram</a>
+        </div>
+    </div>
+
+    <!-- ROLLER 2 NO MEIO (Rola para a Direita - reverse) -->
+    <div class="roller-wrapper dark" style="margin-top: 4rem;">
+        <div class="roller-track" style="animation-direction: reverse;">
+            <div class="roller-item">CAMPANHAS PERSONALIZADAS <span class="roller-icon">❖</span></div>
+            <div class="roller-item">FLUXO SIMPLIFICADO <span class="roller-icon">❖</span></div>
+            <div class="roller-item">SUPORTE DEDICADO <span class="roller-icon">❖</span></div>
+            <div class="roller-item">TRANSPARÊNCIA TOTAL <span class="roller-icon">❖</span></div>
+            <div class="roller-item">RESPEITO À AUDIÊNCIA <span class="roller-icon">❖</span></div>
+            <!-- Duplicação para loop -->
+            <div class="roller-item">CAMPANHAS PERSONALIZADAS <span class="roller-icon">❖</span></div>
+            <div class="roller-item">FLUXO SIMPLIFICADO <span class="roller-icon">❖</span></div>
+            <div class="roller-item">SUPORTE DEDICADO <span class="roller-icon">❖</span></div>
+            <div class="roller-item">TRANSPARÊNCIA TOTAL <span class="roller-icon">❖</span></div>
+            <div class="roller-item">RESPEITO À AUDIÊNCIA <span class="roller-icon">❖</span></div>
+        </div>
+    </div>
+
+    <!-- COMO FUNCIONA -->
+    <section id="como-funciona" class="texture-radial-blue">
+        <div class="container">
+            <h2 class="section-title reveal">Como a <span class="text-navy">Atlas</span> trabalha</h2>
+            <p class="section-subtitle reveal">Sem burocracia, sem enrolação. Um processo desenhado para valorizar o seu tempo e o seu público.</p>
+            
+            <div class="grid-2 align-center mt-5">
+                <div class="reveal">
+                    <ul class="step-list">
+                        <li class="step-item">
+                            <h4>Análise de Perfil</h4>
+                            <p>Avaliamos seu nicho, engajamento e público para encontrar a campanha perfeita que faça sentido para sua audiência.</p>
+                        </li>
+                        <li class="step-item">
+                            <h4>Proposta e Roteiro</h4>
+                            <p>Enviamos uma proposta clara com briefing estruturado. Nada de textos robóticos; você adapta para a sua voz.</p>
+                        </li>
+                        <li class="step-item">
+                            <h4>Postagem e Rastreio</h4>
+                            <p>Você recebe links exclusivos (UTMs) para postar. Acompanhamos cada clique e conversão gerada pelos seus stories.</p>
+                        </li>
+                        <li class="step-item">
+                            <h4>Pagamento Rápido</h4>
+                            <p>Receba de forma transparente baseada na performance real da sua campanha. Crescemos juntos.</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="reveal" style="background-color: var(--white); padding: 40px; border-radius: 24px; box-shadow: var(--shadow-lg); border: 1px solid rgba(212, 175, 55, 0.3);">
+                    <h3 style="font-size: 1.5rem; margin-bottom: 20px; color: var(--navy-blue);">Por que criadores preferem a Atlas?</h3>
+                    <p style="margin-bottom: 20px; color: var(--medium-gray);">A maioria das agências trata criadores como outdoors. Nós tratamos como parceiros de negócios.</p>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 15px; color: var(--text-dark); font-weight: 500;">
+                        <li style="display: flex; align-items: center; gap: 10px;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                            Campanhas validadas que convertem
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 10px;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                            Suporte 1 a 1 via WhatsApp
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 10px;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                            Respeito absoluto à sua linha editorial
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- QUEBRA DE OBJEÇÕES -->
+    <section id="objecoes">
+        <div class="container">
+            <h2 class="section-title reveal">O fim das parcerias ruins</h2>
+            <p class="section-subtitle reveal">Sabemos o que te frustra no mercado atual. A Atlas Media Group foi criada para resolver exatamente isso.</p>
+            
+            <div class="grid-3">
+                <div class="card reveal">
+                    <div class="card-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    </div>
+                    <h3>Sem contratos engessados</h3>
+                    <p>Você não fica preso. Fazemos parcerias por campanha. Se for bom para ambos, repetimos. Simples assim.</p>
+                </div>
+                
+                <div class="card reveal">
+                    <div class="card-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <h3>Transparência nos ganhos</h3>
+                    <p>Chega de "taxas ocultas". Você sabe exatamente qual a meta da campanha e como a performance é medida através de links rastreáveis.</p>
+                </div>
+
+                <div class="card reveal">
+                    <div class="card-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    </div>
+                    <h3>Foco na sua audiência</h3>
+                    <p>Não empurramos produtos ruins. Só trabalhamos com ofertas validadas que realmente agregam valor para quem te segue.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERSTITIAL CTA 2 -->
+    <div class="container reveal">
+        <div class="cta-banner" style="background: var(--navy-blue); border-radius: 24px;">
+            <h3 style="color: var(--white);">Curtiu o formato?</h3>
+            <p style="color: rgba(255,255,255,0.8);">Mande uma DM e vamos fazer um teste sem compromisso.</p>
+            <a href="https://instagram.com/atlasmediagroup" target="_blank" class="btn btn-primary">Testar uma parceria</a>
+        </div>
+    </div>
+
+    <!-- ROLLER 3 ANTES DO FAQ (Rola para a Esquerda) -->
+    <!-- Fundo dourado, texto azul profundo -->
+    <div class="roller-wrapper gold" style="margin: 4rem 0;">
+        <div class="roller-track">
+            <div class="roller-item">MONETIZAÇÃO SAUDÁVEL <span class="roller-icon">●</span></div>
+            <div class="roller-item">SEM BUROCRACIA <span class="roller-icon">●</span></div>
+            <div class="roller-item">FOCO NO SEU PERFIL <span class="roller-icon">●</span></div>
+            <div class="roller-item">CRESCIMENTO MÚTUO <span class="roller-icon">●</span></div>
+            <div class="roller-item">VALORIZAÇÃO DO CRIADOR <span class="roller-icon">●</span></div>
+            <!-- Duplicação para loop -->
+            <div class="roller-item">MONETIZAÇÃO SAUDÁVEL <span class="roller-icon">●</span></div>
+            <div class="roller-item">SEM BUROCRACIA <span class="roller-icon">●</span></div>
+            <div class="roller-item">FOCO NO SEU PERFIL <span class="roller-icon">●</span></div>
+            <div class="roller-item">CRESCIMENTO MÚTUO <span class="roller-icon">●</span></div>
+            <div class="roller-item">VALORIZAÇÃO DO CRIADOR <span class="roller-icon">●</span></div>
+        </div>
+    </div>
+
+    <!-- FAQ -->
+    <section id="faq">
+        <div class="container">
+            <h2 class="section-title reveal">Dúvidas Frequentes</h2>
+            <div class="reveal" style="max-width: 800px; margin: 0 auto; background: var(--white); padding: 30px; border-radius: 24px; box-shadow: var(--shadow-sm); border: 1px solid rgba(7,26,51,0.05);">
+                
+                <div class="faq-item">
+                    <div class="faq-question">Preciso ter muitos seguidores? <span class="faq-icon">+</span></div>
+                    <div class="faq-answer">Analisamos muito mais o seu engajamento e o nicho do que o número bruto de seguidores. Micro-influenciadores com público fiel costumam ter resultados excelentes nas nossas campanhas.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">Eu escolho o que vou postar? <span class="faq-icon">+</span></div>
+                    <div class="faq-answer">Sempre. Nós apresentamos a campanha e enviamos um briefing. Se não fizer sentido para sua linha editorial, você tem total liberdade para recusar. A palavra final é sua.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">Como acompanho meus resultados? <span class="faq-icon">+</span></div>
+                    <div class="faq-answer">Você receberá links exclusivos (parametrizados) para colocar nos seus stories. Nossa equipe envia relatórios transparentes de cliques e conversões para que você saiba exatamente sua performance.</div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section class="cta-final reveal">
+        <div class="container" style="text-align: center;">
+            <h2 style="font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; color: var(--navy-blue); margin-bottom: 24px;">Chama a <span class="text-gold">Atlas Media Group</span></h2>
+            <p class="section-subtitle" style="margin-bottom: 2rem; color: var(--medium-gray);">Envie uma DM no nosso Instagram com a palavra <strong>PARCERIA</strong>.<br>Nossa equipe vai analisar seu perfil e enviar a melhor campanha.</p>
+            <a href="https://instagram.com/atlasmediagroup" target="_blank" class="btn btn-primary" style="font-size: 1.2rem; padding: 20px 48px;">
+                Falar com a Atlas
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <a href="#" class="footer-logo">ATLAS<span>MEDIA.</span></a>
+            <p>Conectamos grandes criadores às melhores campanhas de conversão. Estratégia, suporte e resultados reais.</p>
+            <div class="footer-bottom">
+                <span>&copy; 2026 Atlas Media Group. Todos os direitos reservados.</span>
+                <a href="https://instagram.com/atlasmediagroup" target="_blank" style="color: var(--primary-gold); text-decoration: none; font-weight: 600;">Instagram Oficial</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- FLOATING CTA MOBILE -->
+    <div class="floating-cta">
+        <a href="https://instagram.com/atlasmediagroup" target="_blank" class="floating-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            Chama a Atlas
+        </a>
+    </div>
+
+    <!-- ================= SCRIPTS ================= -->
+    <script>
+        // 1. Preloader
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            // Aguarda a animação da barra terminar (~1.5s)
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                    // Dispara animações iniciais
+                    revealOnScroll();
+                }, 600); // Tempo do fade-out
+            }, 1800); 
+        });
+
+        // 2. Navbar Scroll Effect (Considerando o Top Roller Absolute)
+        const navbar = document.querySelector('.navbar');
+        const topBarHeight = 38; // px
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > topBarHeight) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // 3. Scroll Reveal Animations
+        const reveals = document.querySelectorAll('.reveal');
+        
+        function revealOnScroll() {
+            const windowHeight = window.innerHeight;
+            const elementVisible = 100;
+
+            reveals.forEach(reveal => {
+                const elementTop = reveal.getBoundingClientRect().top;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveal.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', revealOnScroll);
+
+        // 4. FAQ Accordion
+        const faqItems = document.querySelectorAll('.faq-item');
+        
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            question.addEventListener('click', () => {
+                // Fecha outros
+                faqItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('active');
+                        otherItem.querySelector('.faq-icon').textContent = '+';
+                    }
+                });
+                
+                // Toggle atual
+                item.classList.toggle('active');
+                const icon = item.querySelector('.faq-icon');
+                if (item.classList.contains('active')) {
+                    icon.textContent = '×';
+                } else {
+                    icon.textContent = '+';
+                }
+            });
+        });
+
+        // 5. Mostrar CTA Flutuante apenas após rolar um pouco
+        const floatingCta = document.querySelector('.floating-cta');
+        window.addEventListener('scroll', () => {
+            // Mostra CTA flutuante se rolar mais de 500px no mobile
+            if (window.innerWidth <= 768) {
+                if (window.scrollY > 500) {
+                    floatingCta.style.opacity = '1';
+                    floatingCta.style.pointerEvents = 'auto';
+                } else {
+                    floatingCta.style.opacity = '0';
+                    floatingCta.style.pointerEvents = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
